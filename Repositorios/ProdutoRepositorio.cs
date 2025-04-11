@@ -19,7 +19,31 @@ namespace ResponsabilidadesClasse.Repositorios
                 file.Close();
             }
         }
-        
+
+        public List<Produto> Listar()
+        {
+            CarregarProdutos();
+            return ListagemProdutos;
+        }
+
+        public int ProximoID()
+        {
+            CarregarProdutos();
+
+            if (ListagemProdutos.Count == 0)
+                return 1;
+
+            return ListagemProdutos.Max(x => x.IdProduto + 1);
+        }
+        public void Inserir(Produto produto)
+        {
+            var identificador = ProximoID();
+            var sw = new StreamWriter(_caminhoBase);
+            sw.WriteLine($"{identificador};{produto.NomeProduto};{produto.Valor};{produto.Situacao}");
+            sw.Close();
+        }
+
+        #region Métodos privados 
         private Produto LinhaTextoParaProduto(string linha)
         {
             var colunas = linha.Split(';');
@@ -46,18 +70,7 @@ namespace ResponsabilidadesClasse.Repositorios
 
             sr.Close();
         }
-        public int ProximoID()
-        {
-            CarregarProdutos();
-
-            if (ListagemProdutos.Count == 0)
-                return 1;
-
-            return ListagemProdutos.Max(x => x.IdProduto);
-        }
-        public void Inserir()
-        {
-            
-        }
+        
     }
 }
+#endregion 
