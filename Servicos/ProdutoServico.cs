@@ -44,7 +44,7 @@ namespace ResponsabilidadesClasse.Servicos
                 Console.WriteLine($"Identificador: {p.IdProduto};Nome: {p.NomeProduto}; Valor: {p.Valor}; Situação: {p.Situacao}");
             }
 
-        }
+        } 
         
     }
 }
