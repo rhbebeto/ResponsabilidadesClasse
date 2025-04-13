@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using ResponsabilidadesClasse.Models;
@@ -39,10 +40,31 @@ namespace ResponsabilidadesClasse.Repositorios
         {
             var identificador = ProximoID();
             var sw = new StreamWriter(_caminhoBase);
-            sw.WriteLine($"{identificador};{produto.NomeProduto};{produto.Valor};{produto.Situacao}");
+            sw.WriteLine(GerarLinhaProduto(identificador, produto));
             sw.Close();
         }
 
+        public bool SeExiste(int id)
+        {
+            CarregarProdutos();
+            return ListagemProdutos.Any(x => x.IdProduto == id);
+        }
+
+        public void Atualizar(Produto produto)
+        {
+            CarregarProdutos();
+            var posicao = ListagemProdutos.FindIndex(x => x.IdProduto == produto.IdProduto);
+            ListagemProdutos[posicao] = produto;
+            RegravarProdutos(ListagemProdutos);
+        }
+
+        public void Remover(int IdProduto)
+        {
+            var posicao = ListagemProdutos.FindIndex(x => x.IdProduto == IdProduto);
+
+
+        }
+        
         #region Métodos privados 
         private Produto LinhaTextoParaProduto(string linha)
         {
@@ -70,7 +92,22 @@ namespace ResponsabilidadesClasse.Repositorios
 
             sr.Close();
         }
-        
+
+        private void RegravarProdutos(List<Produto> produtos)
+        {
+            var sw = new StreamWriter(_caminhoBase);
+            foreach(var produto  in produtos.OrderBy(x => x.IdProduto))
+            {
+                sw.WriteLine(GerarLinhaProduto(produto.IdProduto, produto));
+            }
+            sw.Close();
+            
+        }
+        private string GerarLinhaProduto(int identificador, Produto produto)
+        {
+            return $"{identificador};{produto.NomeProduto};{produto.Valor};{produto.Situacao}";
+        }
+        #endregion
+
     }
 }
-#endregion 
